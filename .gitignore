@@ -1,0 +1,40 @@
+.vs/
+# Build results
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.docstates
+
+# NuGet Packages
+*.nupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# IDE-specific files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Environment-specific files
+appsettings.*.json
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Dependency directories
+node_modules/
+
+# Publish output
+publish/
+
+# Other temporary files
+*.bak
+*.tmp
+*.temp
