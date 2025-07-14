@@ -11,6 +11,8 @@ using SWP391.Infrastructure.Models;
 using SWP391.Infrastructure.Repositories;
 using SWP391.Infrastructure.Repositories.Interfaces;
 using System.Text;
+using Quartz;
+using SWP391.Application.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +81,22 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key not configured"))),        
     };
 });
+//Quartz
+builder.Services.AddQuartz(q =>
+{
+    // Job duy nhất chạy mỗi 8h sáng
+    var jobKey = new JobKey("PillReminderJob");
 
+    q.AddJob<PillReminderJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("PillReminderJob-trigger")
+        .WithCronSchedule("0 0/1 * * * ?") 
+    );
+});
+// Tích hợp Quartz
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 // Thêm CORS
 builder.Services.AddCors(options =>
 {
@@ -98,7 +115,6 @@ builder.Services.AddCors(options =>
 // Register services
 
 builder.Services.AddScoped<IContraceptivePillReminder, ContraceptivePillReminder>();
-builder.Services.AddHostedService<PillReminderService>(); // BackgroundService
 builder.Services.AddScoped<IPillIntakeCycleService, PillIntakeCycleService>();
 builder.Services.AddScoped<IPillIntakeCycleRepository, PillIntakeCycleRepository>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

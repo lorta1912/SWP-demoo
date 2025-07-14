@@ -19,27 +19,9 @@ namespace SWP391.Api.Controllers
             _pillIntakeCycleService = pillIntakeCycleService;
         }
 
-        [HttpPost("run-daily-reminder")]
-        //[Authorize] // Bật nếu chỉ cho user/authenticated gọi
-        public async Task<IActionResult> RunDailyPillReminder()
-        {
-            try
-            {
-                await _pillReminder.RunDailyPillReminderAsync();
+        
 
-                return Ok(ApiResponse<object>.Success(null, "Daily pill reminder run successful."));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ApiResponse<object>.Error(401, ex.Message));
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, ApiResponse<object>.Error(500, "Internal server error."));
-            }
-        }
-
-        [HttpPost("extend-pill-pack")]
+        [HttpGet("extend-pill-pack")]
         public async Task<IActionResult> ExtendPillPack([FromQuery] int packId)
         {
             try
